@@ -1,0 +1,2 @@
+package com.devido.devido_be.repository;public interface UserRepository {
+}
