@@ -1,9 +1,6 @@
 package com.devido.devido_be.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -28,5 +25,21 @@ public class User {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private Instant createdAt;
+
+    @ManyToMany
+    @JoinTable(
+            name = "group_members",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id")
+    )
+    private java.util.Set<Group> groups;
+
+    @ManyToMany
+    @JoinTable(
+            name = "expense_participants",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "expense_id")
+    )
+    private java.util.Set<Expense> expenses;
 
 }

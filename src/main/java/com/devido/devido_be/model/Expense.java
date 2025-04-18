@@ -46,4 +46,12 @@ public class Expense {
     @Column(name = "created_at")
     private Instant createdAt;
 
+    @ManyToMany
+    @JoinTable(
+            name = "expense_participants",
+            joinColumns = @JoinColumn(name = "expense_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private java.util.Set<User> participants;
+
 }
