@@ -1,14 +1,13 @@
 package com.devido.devido_be.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "groups")
 public class Group {
@@ -23,12 +22,38 @@ public class Group {
     @Column(name = "created_at")
     private Instant createdAt;
 
-    @ManyToMany
-    @JoinTable(
-            name = "group_members",
-            joinColumns = @JoinColumn(name = "group_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private java.util.Set<User> members;
+    @ManyToMany(mappedBy = "groups", fetch = FetchType.LAZY)
+    private Set<User> users = new HashSet<>();
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
 }
