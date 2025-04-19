@@ -35,14 +35,6 @@ public class User {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "expense_participants",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "expense_id")
-    )
-    private Set<Expense> expenses;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
             name = "bill_members",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "bill_id")
@@ -103,14 +95,6 @@ public class User {
 
     public void setGroups(Set<Group> groups) {
         this.groups = groups;
-    }
-
-    public Set<Expense> getExpenses() {
-        return expenses;
-    }
-
-    public void setExpenses(Set<Expense> expenses) {
-        this.expenses = expenses;
     }
 
     public Set<Bill> getBills() {

@@ -3,6 +3,8 @@ package com.devido.devido_be.controller;
 import com.devido.devido_be.dto.ApiResponse;
 import com.devido.devido_be.dto.GroupDTO;
 import com.devido.devido_be.model.Group;
+import com.devido.devido_be.service.CategoryService;
+import com.devido.devido_be.service.ExpenseService;
 import com.devido.devido_be.service.GroupService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +14,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/groups")
 public class GroupController {
     private final GroupService groupService;
-    public GroupController(GroupService groupService) {
+    private final CategoryService categoryService;
+    private final ExpenseService expenseService;
+
+    public GroupController(GroupService groupService, CategoryService categoryService, ExpenseService expenseService) {
         this.groupService = groupService;
+        this.categoryService = categoryService;
+        this.expenseService = expenseService;
     }
 
     @GetMapping("")
@@ -63,6 +70,27 @@ public class GroupController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse<>(false, "Fail to delete group", null));
+        }
+    }
+
+    @GetMapping("/{id}/categories")
+    public ResponseEntity<?> getAllCategories(@PathVariable String id) {
+        try {
+        return ResponseEntity.ok(categoryService.getAllCategoriesOfGroup(id));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Fail to get categories", null));
+        }
+    }
+
+    @GetMapping("/{id}/expenses")
+    public ResponseEntity<?> getAllExpenses(@PathVariable String id) {
+        try {
+            return ResponseEntity.ok(expenseService.getAllExpensesOfGroup(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Fail to get expenses", null));
         }
     }
 }

@@ -13,17 +13,17 @@ public class GroupDTO {
 
     public GroupDTO() {}
 
+    public GroupDTO(String id, String name, Instant createdAt) {
+        this.id = id;
+        this.name = name;
+        this.createdAt = createdAt;
+    }
+
     public GroupDTO(String id, String name, Instant createdAt, List<UserDTO> users) {
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;
         this.users = users;
-    }
-
-    public GroupDTO(String id, String name, Instant createdAt) {
-        this.id = id;
-        this.name = name;
-        this.createdAt = createdAt;
     }
 
     public String getId() {
