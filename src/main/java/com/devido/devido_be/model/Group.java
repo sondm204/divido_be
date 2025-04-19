@@ -25,6 +25,11 @@ public class Group {
     @ManyToMany(mappedBy = "groups", fetch = FetchType.LAZY)
     private Set<User> users = new HashSet<>();
 
+    public Group() {
+        this.createdAt = Instant.now();
+    }
+
+
     public String getId() {
         return id;
     }

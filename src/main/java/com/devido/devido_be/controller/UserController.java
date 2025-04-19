@@ -44,10 +44,10 @@ public class UserController {
         }
     }
 
-    @PutMapping("")
-    public ResponseEntity<?> updateUser(@RequestBody UserDTO newUser) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody UserDTO newUser) {
         try {
-            User user = userService.updateUser(newUser);
+            User user = userService.updateUser(id, newUser);
             UserDTO responseDTO = new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt());
             return ResponseEntity.ok(new ApiResponse<>(true, "User updated successfully", responseDTO));
         } catch (Exception e) {

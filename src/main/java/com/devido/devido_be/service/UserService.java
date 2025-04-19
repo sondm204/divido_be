@@ -38,17 +38,16 @@ public class UserService {
         return userRepository.save(newUser);
     }
 
-    public User updateUser(UserDTO user) {
-        User updateUser = userRepository.findById(user.getId()).orElse(null);
+    public User updateUser(String id, UserDTO user) {
+        User updateUser = userRepository.findById(id).orElse(null);
         assert updateUser != null;
         if (user.getName() != null) updateUser.setName(user.getName());
         if (user.getEmail() != null) updateUser.setEmail(user.getEmail());
         return userRepository.save(updateUser);
     }
 
-    public String deleteUser(String id) {
+    public void deleteUser(String id) {
         userRepository.findById(id).orElseThrow(() -> new RuntimeException("User with id " + id + " not found"));
         userRepository.deleteById(id);
-        return id;
     }
 }
