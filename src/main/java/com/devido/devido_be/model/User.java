@@ -31,15 +31,8 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id")
     )
+    @OrderBy("createdAt DESC")
     private Set<Group> groups = new HashSet<>();
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "expense_participants",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "expense_id")
-    )
-    private Set<Expense> expenses;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -103,14 +96,6 @@ public class User {
 
     public void setGroups(Set<Group> groups) {
         this.groups = groups;
-    }
-
-    public Set<Expense> getExpenses() {
-        return expenses;
-    }
-
-    public void setExpenses(Set<Expense> expenses) {
-        this.expenses = expenses;
     }
 
     public Set<Bill> getBills() {

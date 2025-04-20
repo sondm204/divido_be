@@ -43,9 +43,6 @@ public class Expense {
     @Column(name = "created_at")
     private Instant createdAt;
 
-    @ManyToMany(mappedBy = "expenses", fetch = FetchType.LAZY)
-    private Set<User> users;
-
     public String getId() {
         return id;
     }
@@ -108,13 +105,5 @@ public class Expense {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
     }
 }
