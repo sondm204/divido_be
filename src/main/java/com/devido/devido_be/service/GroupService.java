@@ -43,6 +43,16 @@ public class GroupService {
         return new GroupDTO(group.getId(), group.getName(), group.getCreatedAt(), users);
     }
 
+    public List<GroupDTO> getAllGroupsOfUser(String userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User with id " + userId + " not found"));
+        List<Group> groups = user.getGroups().stream().toList();
+        List<GroupDTO> groupDTOs = new ArrayList<>();
+        for (Group group : groups) {
+            groupDTOs.add(new GroupDTO(group.getId(), group.getName(), group.getCreatedAt()));
+        }
+        return groupDTOs;
+    }
+
     public Group createGroup(GroupDTO groupDTO) {
         Group group = new Group();
         group.setId(UUIDGenerator.getRandomUUID());
