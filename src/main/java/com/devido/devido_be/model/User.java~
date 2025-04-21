@@ -39,8 +39,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<ExpenseParticipant> expenseParticipants;
 
-    public User() {
-    }
+    public User() {}
 
     public User(String id, String name, String email, Instant createdAt) {
         this.id = id;

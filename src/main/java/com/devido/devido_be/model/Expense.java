@@ -39,6 +39,9 @@ public class Expense {
     @Column(name = "note", length = Integer.MAX_VALUE)
     private String note;
 
+    @OneToMany(mappedBy = "expense")
+    private Set<ExpenseParticipant> expenseParticipants;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private Instant createdAt;
@@ -105,5 +108,13 @@ public class Expense {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Set<ExpenseParticipant> getExpenseParticipants() {
+        return expenseParticipants;
+    }
+
+    public void setExpenseParticipants(Set<ExpenseParticipant> expenseParticipants) {
+        this.expenseParticipants = expenseParticipants;
     }
 }
