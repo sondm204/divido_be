@@ -1,6 +1,7 @@
 package com.devido.devido_be.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class BillDTO {
     private String id;
@@ -8,15 +9,17 @@ public class BillDTO {
     private BigDecimal quantity;
     private Integer unitPrice;
     private Integer totalPrice;
+    private List<String> owner;
 
     public BillDTO() {}
 
-    public BillDTO(String id, String name, BigDecimal quantity, Integer unitPrice, Integer totalPrice) {
+    public BillDTO(String id, String name, BigDecimal quantity, Integer unitPrice, Integer totalPrice, List<String> owner) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.totalPrice = totalPrice;
+        this.owner = owner;
     }
 
     public String getId() {
@@ -57,5 +60,13 @@ public class BillDTO {
 
     public void setTotalPrice(Integer totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public List<String> getOwner() {
+        return owner;
+    }
+
+    public void setOwner(List<String> owner) {
+        this.owner = owner;
     }
 }

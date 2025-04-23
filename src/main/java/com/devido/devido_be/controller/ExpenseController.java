@@ -21,7 +21,7 @@ public class ExpenseController {
         this.billService = billService;
     }
 
-    @GetMapping("/{id}/bills")
+    @GetMapping("/{id}/bill")
     public ResponseEntity<?> getAllBillsOfExpense(@PathVariable String id) {
         try {
             return ResponseEntity.ok(billService.getAllBillsOfExpense(id));
