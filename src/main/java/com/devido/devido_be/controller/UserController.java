@@ -45,6 +45,16 @@ public class UserController {
         }
     }
 
+    @GetMapping("/email/{email}")
+    public ResponseEntity<?> getUserByEmail(@PathVariable String email) {
+        try {
+            return ResponseEntity.ok(userService.getUserByEmail(email));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Cannot find user", null));
+        }
+    }
+
     @PostMapping("")
     public ResponseEntity<?> createUser(@RequestBody UserDTO newUser) {
         try {

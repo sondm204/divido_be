@@ -22,7 +22,7 @@ public class Group {
     @Column(name = "created_at")
     private Instant createdAt;
 
-    @OneToMany(mappedBy = "group")
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<GroupMember> groupMembers;
 
     public Group() {

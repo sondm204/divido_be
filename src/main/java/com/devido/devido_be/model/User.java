@@ -25,7 +25,7 @@ public class User {
     @Column(name = "created_at")
     private Instant createdAt;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<GroupMember> groupMembers = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
