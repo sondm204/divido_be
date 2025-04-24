@@ -1,7 +1,0 @@
-package com.devido.devido_be.model;
-
-import jakarta.persistence.Entity;
-
-@Entity
-public class GroupMember {
-  }

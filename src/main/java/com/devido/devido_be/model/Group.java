@@ -22,8 +22,8 @@ public class Group {
     @Column(name = "created_at")
     private Instant createdAt;
 
-    @ManyToMany(mappedBy = "groups", fetch = FetchType.LAZY)
-    private Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "group")
+    private Set<GroupMember> groupMembers;
 
     public Group() {
         this.createdAt = Instant.now();
@@ -54,11 +54,11 @@ public class Group {
         this.createdAt = createdAt;
     }
 
-    public Set<User> getUsers() {
-        return users;
+    public Set<GroupMember> getGroupMembers() {
+        return groupMembers;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public void setGroupMembers(Set<GroupMember> groupMembers) {
+        this.groupMembers = groupMembers;
     }
 }
