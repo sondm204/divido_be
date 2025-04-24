@@ -8,10 +8,12 @@ import com.devido.devido_be.model.GroupMember;
 import com.devido.devido_be.model.GroupMemberId;
 import com.devido.devido_be.model.User;
 import com.devido.devido_be.other.UUIDGenerator;
+import com.devido.devido_be.repository.GroupMemberRepository;
 import com.devido.devido_be.repository.GroupRepository;
 import com.devido.devido_be.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -24,10 +26,12 @@ import java.util.stream.Collectors;
 public class GroupService {
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
+    private final GroupMemberRepository groupMemberRepository;
 
-    public GroupService(GroupRepository groupRepository, UserRepository userRepository) {
+    public GroupService(GroupRepository groupRepository, UserRepository userRepository, GroupMemberRepository groupMemberRepository) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
+        this.groupMemberRepository = groupMemberRepository;
     }
 
     public List<GroupDTO> getAllGroups() {
@@ -59,27 +63,33 @@ public class GroupService {
 
     public Group createGroup(GroupDTO groupDTO) {
         Group group = new Group();
-        group.setId(UUIDGenerator.getRandomUUID());
+        String newGroupId = UUIDGenerator.getRandomUUID();
+        group.setId(newGroupId);
         group.setName(groupDTO.getName());
-        return groupRepository.save(group);
+        groupRepository.save(group);
+        if (groupDTO.getUsers() != null) {
+            for (UserDTO userDTO : groupDTO.getUsers()) {
+                User user = userRepository.findById(userDTO.getId()).orElseThrow(() -> new RuntimeException("User with id " + userDTO.getId() + " not found"));
+                GroupMemberId groupMemberId = new GroupMemberId(groupDTO.getId(), userDTO.getId());
+                GroupMember groupMember = new GroupMember(groupMemberId, group, user, Instant.now());
+                groupMemberRepository.save(groupMember);
+            }
+        }
+        return group;
     }
 
     public Group updateGroup(String id, GroupDTO groupDTO) {
         Group group = groupRepository.findById(id).orElseThrow(() -> new RuntimeException("Group with id " + id + " not found"));
-        if(groupDTO.getName() != null) group.setName(groupDTO.getName());
-        if(groupDTO.getUsers() != null) {
-            Set<User> users = new HashSet<>();
+        if (groupDTO.getName() != null) group.setName(groupDTO.getName());
+        if (groupDTO.getUsers() != null) {
             for (UserDTO userDTO : groupDTO.getUsers()) {
                 User user = userRepository.findById(userDTO.getId()).orElseThrow(() -> new RuntimeException("User with id " + userDTO.getId() + " not found"));
-                users.add(user);
+                GroupMemberId groupMemberId = new GroupMemberId(id, userDTO.getId());
+                GroupMember groupMember = new GroupMember(groupMemberId, group, user, Instant.now());
+                groupMemberRepository.save(groupMember);
             }
-            for(User user : users) {
-                List<Group> groups = new ArrayList<>(user.getGroupMembers().stream().map(GroupMember::getGroup).toList());
-                groups.add(group);
-            }
-            group.setGroupMembers(users.stream().map(u -> new GroupMember(new GroupMemberId(id, u.getId()), group, u, Instant.now())).collect(Collectors.toSet()));
         }
-        return groupRepository.save(group);
+        return group;
     }
 
     public void deleteGroup(String id) {

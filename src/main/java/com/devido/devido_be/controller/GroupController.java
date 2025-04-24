@@ -6,6 +6,7 @@ import com.devido.devido_be.model.Group;
 import com.devido.devido_be.service.CategoryService;
 import com.devido.devido_be.service.ExpenseService;
 import com.devido.devido_be.service.GroupService;
+import com.devido.devido_be.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +17,13 @@ public class GroupController {
     private final GroupService groupService;
     private final CategoryService categoryService;
     private final ExpenseService expenseService;
+    private final UserService userService;
 
-    public GroupController(GroupService groupService, CategoryService categoryService, ExpenseService expenseService) {
+    public GroupController(GroupService groupService, CategoryService categoryService, ExpenseService expenseService, UserService userService) {
         this.groupService = groupService;
         this.categoryService = categoryService;
         this.expenseService = expenseService;
+        this.userService = userService;
     }
 
     @GetMapping("")
@@ -91,6 +94,16 @@ public class GroupController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse<>(false, "Fail to get expenses", null));
+        }
+    }
+
+    @GetMapping("/{id}/users")
+    public ResponseEntity<?> getAllUsers(@PathVariable String id) {
+        try {
+            return ResponseEntity.ok(userService.getUsersOfGroup(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Fail to get users", null));
         }
     }
 }
