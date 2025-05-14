@@ -78,10 +78,12 @@ public class GroupService {
         return group;
     }
 
+    @Transactional
     public GroupDTO updateGroup(String id, GroupDTO groupDTO) {
         Group group = groupRepository.findById(id).orElseThrow(() -> new RuntimeException("Group with id " + id + " not found"));
         if (groupDTO.getName() != null) group.setName(groupDTO.getName());
         if (groupDTO.getUsers() != null) {
+            groupMemberRepository.deleteAllByGroupId(id);
             for (UserDTO userDTO : groupDTO.getUsers()) {
                 User user = userRepository.findById(userDTO.getId()).orElseThrow(() -> new RuntimeException("User with id " + userDTO.getId() + " not found"));
                 GroupMemberId groupMemberId = new GroupMemberId(id, userDTO.getId());
