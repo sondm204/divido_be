@@ -56,8 +56,7 @@ public class GroupController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateGroup(@PathVariable String id, @RequestBody GroupDTO groupDTO) {
         try {
-            Group group = groupService.updateGroup(id, groupDTO);
-            GroupDTO groupResponse = new GroupDTO(group.getId(), group.getName(), group.getCreatedAt());
+            GroupDTO groupResponse = groupService.updateGroup(id, groupDTO);
             return ResponseEntity.ok(new ApiResponse<>(true, "Group updated successfully", groupResponse));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -78,7 +78,7 @@ public class GroupService {
         return group;
     }
 
-    public Group updateGroup(String id, GroupDTO groupDTO) {
+    public GroupDTO updateGroup(String id, GroupDTO groupDTO) {
         Group group = groupRepository.findById(id).orElseThrow(() -> new RuntimeException("Group with id " + id + " not found"));
         if (groupDTO.getName() != null) group.setName(groupDTO.getName());
         if (groupDTO.getUsers() != null) {
@@ -89,7 +89,7 @@ public class GroupService {
                 groupMemberRepository.save(groupMember);
             }
         }
-        return group;
+        return groupDTO;
     }
 
     public void deleteGroup(String id) {
