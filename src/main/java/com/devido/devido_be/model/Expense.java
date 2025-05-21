@@ -46,6 +46,23 @@ public class Expense {
     @Column(name = "created_at")
     private Instant createdAt;
 
+    public Expense() {}
+
+    public Expense(String id, Group group, Category category, Integer amount, User payer, LocalDate spentAt, String note) {
+        this.id = id;
+        this.group = group;
+        this.category = category;
+        this.amount = amount;
+        this.payer = payer;
+        this.spentAt = spentAt;
+        this.note = note;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = Instant.now();
+    }
+
     public String getId() {
         return id;
     }
