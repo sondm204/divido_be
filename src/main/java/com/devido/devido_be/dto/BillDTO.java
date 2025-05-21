@@ -9,11 +9,11 @@ public class BillDTO {
     private BigDecimal quantity;
     private Integer unitPrice;
     private Integer totalPrice;
-    private List<String> owner;
+    private List<UserDTO> owner;
 
     public BillDTO() {}
 
-    public BillDTO(String id, String name, BigDecimal quantity, Integer unitPrice, Integer totalPrice, List<String> owner) {
+    public BillDTO(String id, String name, BigDecimal quantity, Integer unitPrice, Integer totalPrice, List<UserDTO> owner) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
@@ -62,11 +62,16 @@ public class BillDTO {
         this.totalPrice = totalPrice;
     }
 
-    public List<String> getOwner() {
+    public List<UserDTO> getOwner() {
         return owner;
     }
 
-    public void setOwner(List<String> owner) {
+    public void setOwner(List<UserDTO> owner) {
         this.owner = owner;
+    }
+
+    public void addOwner(UserDTO user) {
+        if (this.owner == null) this.owner = List.of(user);
+        this.owner.add(user);
     }
 }

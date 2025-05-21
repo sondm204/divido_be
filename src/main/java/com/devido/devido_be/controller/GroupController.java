@@ -1,10 +1,7 @@
 package com.devido.devido_be.controller;
 
 import com.devido.devido_be.dto.*;
-import com.devido.devido_be.model.Expense;
-import com.devido.devido_be.model.ExpenseParticipant;
-import com.devido.devido_be.model.Group;
-import com.devido.devido_be.model.User;
+import com.devido.devido_be.model.*;
 import com.devido.devido_be.service.CategoryService;
 import com.devido.devido_be.service.ExpenseService;
 import com.devido.devido_be.service.GroupService;
@@ -12,6 +9,9 @@ import com.devido.devido_be.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/groups")
@@ -117,6 +117,21 @@ public class GroupController {
                     expenseResponse.addShareRatio(
                             new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt()),
                             expenseParticipant.getShareRatio()
+                    );
+                }
+            }
+            if (expense.getBills() != null && !expense.getBills().isEmpty()) {
+                for(Bill bill : expense.getBills()) {
+                    Set<User> users = bill.getUsers();
+                    expenseResponse.addBill(
+                        new BillDTO(
+                            bill.getId(),
+                            bill.getName(),
+                            bill.getQuantity(),
+                            bill.getUnitPrice(),
+                            bill.getTotalPrice(),
+                            users.stream().map(u -> new UserDTO(u.getId(), u.getName(), u.getEmail(), u.getCreatedAt())).toList()
+                        )
                     );
                 }
             }

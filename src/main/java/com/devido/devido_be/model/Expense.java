@@ -42,6 +42,9 @@ public class Expense {
     @OneToMany(mappedBy = "expense")
     private Set<ExpenseParticipant> expenseParticipants;
 
+    @OneToMany(mappedBy = "expense")
+    private Set<Bill> bills;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private Instant createdAt;
@@ -133,5 +136,13 @@ public class Expense {
 
     public void setExpenseParticipants(Set<ExpenseParticipant> expenseParticipants) {
         this.expenseParticipants = expenseParticipants;
+    }
+
+    public Set<Bill> getBills() {
+        return bills;
+    }
+
+    public void setBills(Set<Bill> bills) {
+        this.bills = bills;
     }
 }

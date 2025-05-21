@@ -17,6 +17,7 @@ public class ExpenseDTO {
     private LocalDate spentAt;
     private String note;
     private List<ShareRatio> shareRatios = new ArrayList<>();
+    private List<BillDTO> bills = new ArrayList<>();
     private Instant createdAt;
 
     public ExpenseDTO() {}
@@ -98,5 +99,18 @@ public class ExpenseDTO {
 
     public void addShareRatio(UserDTO user, BigDecimal shareRatio) {
         this.shareRatios.add(new ShareRatio(user, shareRatio));
+    }
+
+    public List<BillDTO> getBills() {
+        return bills;
+    }
+
+    public void setBills(List<BillDTO> bills) {
+        this.bills = bills;
+    }
+
+    public void addBill(BillDTO bill) {
+        if (this.bills == null) this.bills = new ArrayList<>();
+        this.bills.add(bill);
     }
 }

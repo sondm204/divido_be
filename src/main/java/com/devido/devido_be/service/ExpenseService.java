@@ -17,13 +17,15 @@ public class ExpenseService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final ExpenseParticipantRepository expenseParticipantRepository;
+    private final BillRepository billRepository;
 
-    public ExpenseService(ExpenseRepository expenseRepository, GroupRepository groupRepository, CategoryRepository categoryRepository, UserRepository userRepository, ExpenseParticipantRepository expenseParticipantRepository) {
+    public ExpenseService(ExpenseRepository expenseRepository, GroupRepository groupRepository, CategoryRepository categoryRepository, UserRepository userRepository, ExpenseParticipantRepository expenseParticipantRepository, BillRepository billRepository) {
         this.expenseRepository = expenseRepository;
         this.groupRepository = groupRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
         this.expenseParticipantRepository = expenseParticipantRepository;
+        this.billRepository = billRepository;
     }
 
     public List<ExpenseDTO> getAllExpensesOfGroup(String groupId) {
@@ -87,6 +89,27 @@ public class ExpenseService {
             }
             Set<ExpenseParticipant> expenseParticipantSave = new HashSet<>(expenseParticipants);
             savedExpense.setExpenseParticipants(expenseParticipantSave);
+        }
+
+        if (expenseDTOs.getBills() != null && !expenseDTOs.getBills().isEmpty()) {
+            List<Bill> bills = new ArrayList<>();
+            for (BillDTO billDTO : expenseDTOs.getBills()) {
+                String newBillId = UUIDGenerator.getRandomUUID();
+                List<User> owner = billDTO.getOwner().stream().map(u -> userRepository.findById(u.getId()).orElseThrow(() -> new RuntimeException("User with id " + u.getId() + " not found"))).toList();
+                Bill bill = new Bill(
+                        newBillId,
+                        savedExpense,
+                        billDTO.getName(),
+                        billDTO.getQuantity(),
+                        billDTO.getUnitPrice(),
+                        billDTO.getTotalPrice(),
+                        new HashSet<>(owner)
+                );
+                Bill savedBill = billRepository.save(bill);
+                bills.add(savedBill);
+            }
+            Set<Bill> billSave = new HashSet<>(bills);
+            savedExpense.setBills(billSave);
         }
         return expenseRepository.findById(newExpenseId).orElseThrow(() -> new RuntimeException("Expense with id " + newExpenseId + " not found"));
     }
