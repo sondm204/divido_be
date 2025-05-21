@@ -1,36 +1,13 @@
 package com.devido.devido_be.dto;
 
+import com.devido.devido_be.model.User;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-class ShareRatio {
-    private String user;
-    private BigDecimal ratio;
-
-    public ShareRatio(String user, BigDecimal shareRatio) {
-        this.user = user;
-        this.ratio = shareRatio;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public BigDecimal getRatio() {
-        return ratio;
-    }
-
-    public void setRatio(BigDecimal ratio) {
-        this.ratio = ratio;
-    }
-}
 
 public class ExpenseDTO {
     private String id;
@@ -40,6 +17,7 @@ public class ExpenseDTO {
     private LocalDate spentAt;
     private String note;
     private List<ShareRatio> shareRatios = new ArrayList<>();
+    private List<BillDTO> bills = new ArrayList<>();
     private Instant createdAt;
 
     public ExpenseDTO() {}
@@ -119,7 +97,20 @@ public class ExpenseDTO {
         this.shareRatios = shareRatios;
     }
 
-    public void addShareRatio(String user, BigDecimal shareRatio) {
+    public void addShareRatio(UserDTO user, BigDecimal shareRatio) {
         this.shareRatios.add(new ShareRatio(user, shareRatio));
+    }
+
+    public List<BillDTO> getBills() {
+        return bills;
+    }
+
+    public void setBills(List<BillDTO> bills) {
+        this.bills = bills;
+    }
+
+    public void addBill(BillDTO bill) {
+        if (this.bills == null) this.bills = new ArrayList<>();
+        this.bills.add(bill);
     }
 }

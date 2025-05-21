@@ -1,8 +1,7 @@
 package com.devido.devido_be.controller;
 
-import com.devido.devido_be.dto.ApiResponse;
-import com.devido.devido_be.dto.GroupDTO;
-import com.devido.devido_be.model.Group;
+import com.devido.devido_be.dto.*;
+import com.devido.devido_be.model.*;
 import com.devido.devido_be.service.CategoryService;
 import com.devido.devido_be.service.ExpenseService;
 import com.devido.devido_be.service.GroupService;
@@ -10,6 +9,9 @@ import com.devido.devido_be.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/groups")
@@ -93,6 +95,50 @@ public class GroupController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse<>(false, "Fail to get expenses", null));
+        }
+    }
+
+    @PostMapping("/{id}/expenses")
+    public ResponseEntity<?> createExpense(@PathVariable String id, @RequestBody ExpenseDTO expenseDTO) {
+        try {
+            Expense expense = expenseService.createExpense(id, expenseDTO);
+            ExpenseDTO expenseResponse = new ExpenseDTO(
+                    expense.getId(),
+                    new CategoryDTO(expense.getCategory().getId(), expense.getCategory().getCategoryName()),
+                    expense.getAmount(),
+                    new UserDTO(expense.getPayer().getId(), expense.getPayer().getName(), expense.getPayer().getEmail(), expense.getPayer().getCreatedAt()),
+                    expense.getSpentAt(),
+                    expense.getNote(),
+                    expense.getCreatedAt()
+            );
+            if (expense.getExpenseParticipants() != null && !expense.getExpenseParticipants().isEmpty()) {
+                for(ExpenseParticipant expenseParticipant : expense.getExpenseParticipants()) {
+                    User user = expenseParticipant.getUser();
+                    expenseResponse.addShareRatio(
+                            new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt()),
+                            expenseParticipant.getShareRatio()
+                    );
+                }
+            }
+            if (expense.getBills() != null && !expense.getBills().isEmpty()) {
+                for(Bill bill : expense.getBills()) {
+                    Set<User> users = bill.getUsers();
+                    expenseResponse.addBill(
+                        new BillDTO(
+                            bill.getId(),
+                            bill.getName(),
+                            bill.getQuantity(),
+                            bill.getUnitPrice(),
+                            bill.getTotalPrice(),
+                            users.stream().map(u -> new UserDTO(u.getId(), u.getName(), u.getEmail(), u.getCreatedAt())).toList()
+                        )
+                    );
+                }
+            }
+            return ResponseEntity.ok(new ApiResponse<>(true, "Expense created successfully", expenseResponse));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Fail to create expense", null));
         }
     }
 

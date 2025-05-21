@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -29,8 +30,25 @@ public class Bill {
     @Column(name = "total_price")
     private Integer totalPrice;
 
-    @ManyToMany(mappedBy = "bills", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "bill_members",
+            joinColumns = @JoinColumn(name = "bill_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private Set<User> users;
+
+    public Bill() {}
+
+    public Bill(String id, Expense expense, String name, BigDecimal quantity, Integer unitPrice, Integer totalPrice, Set<User> users) {
+        this.id = id;
+        this.expense = expense;
+        this.name = name;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.totalPrice = totalPrice;
+        this.users = users;
+    }
 
     public String getId() {
         return id;

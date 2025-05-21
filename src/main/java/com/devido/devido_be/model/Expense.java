@@ -42,9 +42,29 @@ public class Expense {
     @OneToMany(mappedBy = "expense")
     private Set<ExpenseParticipant> expenseParticipants;
 
+    @OneToMany(mappedBy = "expense")
+    private Set<Bill> bills;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private Instant createdAt;
+
+    public Expense() {}
+
+    public Expense(String id, Group group, Category category, Integer amount, User payer, LocalDate spentAt, String note) {
+        this.id = id;
+        this.group = group;
+        this.category = category;
+        this.amount = amount;
+        this.payer = payer;
+        this.spentAt = spentAt;
+        this.note = note;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = Instant.now();
+    }
 
     public String getId() {
         return id;
@@ -116,5 +136,13 @@ public class Expense {
 
     public void setExpenseParticipants(Set<ExpenseParticipant> expenseParticipants) {
         this.expenseParticipants = expenseParticipants;
+    }
+
+    public Set<Bill> getBills() {
+        return bills;
+    }
+
+    public void setBills(Set<Bill> bills) {
+        this.bills = bills;
     }
 }

@@ -28,13 +28,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<GroupMember> groupMembers = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "bill_members",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "bill_id")
-    )
-    private Set<Bill> bills;
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    private Set<Bill> bills = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
     private Set<ExpenseParticipant> expenseParticipants;
