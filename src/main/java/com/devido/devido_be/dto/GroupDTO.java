@@ -11,6 +11,7 @@ public class GroupDTO {
     private String name;
     private Instant createdAt;
     private List<CategoryDTO> categories = new ArrayList<>();
+    private List<ExpenseDTO> expenses = new ArrayList<>();
     private List<UserDTO> users = new ArrayList<>();
 
     public GroupDTO() {}
@@ -28,11 +29,12 @@ public class GroupDTO {
         this.users = users;
     }
 
-    public GroupDTO(String id, String name, Instant createdAt, List<CategoryDTO> categories, List<UserDTO> users) {
+    public GroupDTO(String id, String name, Instant createdAt, List<CategoryDTO> categories, List<ExpenseDTO> expenses, List<UserDTO> users) {
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;
         this.categories = categories;
+        this.expenses = expenses;
         this.users = users;
     }
 
@@ -74,5 +76,13 @@ public class GroupDTO {
 
     public void setCategories(List<CategoryDTO> categories) {
         this.categories = categories;
+    }
+
+    public List<ExpenseDTO> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(List<ExpenseDTO> expenses) {
+        this.expenses = expenses;
     }
 }
