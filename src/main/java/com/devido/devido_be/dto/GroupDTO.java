@@ -1,6 +1,7 @@
 package com.devido.devido_be.dto;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,7 +10,8 @@ public class GroupDTO {
     private String id;
     private String name;
     private Instant createdAt;
-    private List<UserDTO> users;
+    private List<CategoryDTO> categories = new ArrayList<>();
+    private List<UserDTO> users = new ArrayList<>();
 
     public GroupDTO() {}
 
@@ -23,6 +25,14 @@ public class GroupDTO {
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;
+        this.users = users;
+    }
+
+    public GroupDTO(String id, String name, Instant createdAt, List<CategoryDTO> categories, List<UserDTO> users) {
+        this.id = id;
+        this.name = name;
+        this.createdAt = createdAt;
+        this.categories = categories;
         this.users = users;
     }
 
@@ -56,5 +66,13 @@ public class GroupDTO {
 
     public void setUsers(List<UserDTO> users) {
         this.users = users;
+    }
+
+    public List<CategoryDTO> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<CategoryDTO> categories) {
+        this.categories = categories;
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BillService {
@@ -21,14 +22,22 @@ public class BillService {
 
     public List<BillDTO> getAllBillsOfExpense(String expenseId) {
         List<Bill> bills = billRepository.findAllByExpenseId(expenseId);
-        List<User> users = bills.stream().flatMap(b -> b.getUsers().stream()).sorted(Comparator.comparing(User::getName)).toList();
+        bills.forEach(bill ->
+                bill.setUsers(
+                        bill.getUsers().stream()
+                                .sorted(Comparator.comparing(User::getName))
+                                .collect(Collectors.toSet())
+                )
+        );
         return bills.stream().map(b -> new BillDTO(
                 b.getId(),
                 b.getName(),
                 b.getQuantity(),
                 b.getUnitPrice(),
                 b.getTotalPrice(),
-                users.stream().map(u -> new UserDTO(u.getId(), u.getName(), u.getEmail(), u.getCreatedAt())).toList()
+                b.getUsers().stream()
+                        .map(u -> new UserDTO(u.getId(), u.getName(), u.getEmail(), u.getCreatedAt()))
+                        .collect(Collectors.toList())
         )).toList();
     }
 }
