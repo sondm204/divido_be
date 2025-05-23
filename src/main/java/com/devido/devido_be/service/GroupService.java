@@ -1,9 +1,6 @@
 package com.devido.devido_be.service;
 
-import com.devido.devido_be.dto.ApiResponse;
-import com.devido.devido_be.dto.CategoryDTO;
-import com.devido.devido_be.dto.GroupDTO;
-import com.devido.devido_be.dto.UserDTO;
+import com.devido.devido_be.dto.*;
 import com.devido.devido_be.model.*;
 import com.devido.devido_be.other.UUIDGenerator;
 import com.devido.devido_be.repository.GroupMemberRepository;
@@ -26,12 +23,14 @@ public class GroupService {
     private final UserRepository userRepository;
     private final GroupMemberRepository groupMemberRepository;
     private final CategoryService categoryService;
+    private final ExpenseService expenseService;
 
-    public GroupService(GroupRepository groupRepository, UserRepository userRepository, GroupMemberRepository groupMemberRepository, CategoryService categoryService) {
+    public GroupService(GroupRepository groupRepository, UserRepository userRepository, GroupMemberRepository groupMemberRepository, CategoryService categoryService, ExpenseService expenseService) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
         this.groupMemberRepository = groupMemberRepository;
         this.categoryService = categoryService;
+        this.expenseService = expenseService;
     }
 
     public List<GroupDTO> getAllGroups() {
@@ -48,7 +47,8 @@ public class GroupService {
         Group group = groupRepository.findById(id).orElseThrow(() -> new RuntimeException("Group with id " + id + " not found"));
         List<CategoryDTO> categories = categoryService.getAllCategoriesOfGroup(id);
         List<UserDTO> users = group.getGroupMembers().stream().map(u -> new UserDTO(u.getUser().getId(), u.getUser().getName(), u.getUser().getEmail(), u.getUser().getCreatedAt())).toList();
-        return new GroupDTO(group.getId(), group.getName(), group.getCreatedAt(), categories, users);
+        List<ExpenseDTO> expenses = expenseService.getAllExpensesOfGroup(id);
+        return new GroupDTO(group.getId(), group.getName(), group.getCreatedAt(), categories, expenses, users);
     }
 
     public List<GroupDTO> getAllGroupsOfUser(String userId) {
