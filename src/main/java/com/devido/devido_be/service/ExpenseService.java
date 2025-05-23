@@ -114,4 +114,35 @@ public class ExpenseService {
         return expenseRepository.findById(newExpenseId).orElseThrow(() -> new RuntimeException("Expense with id " + newExpenseId + " not found"));
     }
 
+    public Expense updateExpense(String id, ExpenseDTO expenseDTO) {
+        Expense expense = expenseRepository.findById(id).orElseThrow(() -> new RuntimeException("Expense with id " + expenseDTO.getId() + " not found"));
+        Category category = categoryRepository.findById(expenseDTO.getCategory().getId()).orElseThrow(() -> new RuntimeException("Category with id " + expenseDTO.getCategory().getId() + " not found"));
+        User payer = userRepository.findById(expenseDTO.getPayer().getId()).orElseThrow(() -> new RuntimeException("User with id " + expenseDTO.getPayer().getId() + " not found"));
+        expense.setCategory(category);
+        expense.setPayer(payer);
+        expense.setAmount(expenseDTO.getAmount());
+        expense.setSpentAt(expenseDTO.getSpentAt());
+        expense.setNote(expenseDTO.getNote());
+        Expense updatedExpense = expenseRepository.save(expense);
+        if (expenseDTO.getShareRatios() != null && !expenseDTO.getShareRatios().isEmpty()) {
+            List<ExpenseParticipant> expenseParticipants = new ArrayList<>();
+            for (ShareRatio shareRatio : expenseDTO.getShareRatios()) {
+                User user = userRepository.findById(shareRatio.getUser().getId()).orElseThrow(() -> new RuntimeException("User with id " + shareRatio.getUser().getId() + " not found"));
+                ExpenseParticipantId newExpenseParticipantId = new ExpenseParticipantId(id, user.getId());
+                ExpenseParticipant expenseParticipant = new ExpenseParticipant(newExpenseParticipantId, updatedExpense, user, shareRatio.getRatio());
+                ExpenseParticipant savedExpenseParticipant = expenseParticipantRepository.save(expenseParticipant);
+                expenseParticipants.add(savedExpenseParticipant);
+            }
+            Set<ExpenseParticipant> expenseParticipantSave = new HashSet<>(expenseParticipants);
+            updatedExpense.setExpenseParticipants(expenseParticipantSave);
+        }
+        return expenseRepository.findById(id).orElseThrow(() -> new RuntimeException("Expense with id " + id + " not found"));
+    }
+
+    public void deleteExpense(String id) {
+        Expense expense = expenseRepository.findById(id).orElseThrow(() -> new RuntimeException("Expense with id " + id + " not found"));
+        expenseRepository.delete(expense);
+    }
+
+
 }
