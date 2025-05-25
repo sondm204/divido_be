@@ -1,13 +1,7 @@
 package com.devido.devido_be.controller;
 
-import com.devido.devido_be.dto.ApiResponse;
-import com.devido.devido_be.dto.CategoryDTO;
-import com.devido.devido_be.dto.ExpenseDTO;
-import com.devido.devido_be.dto.UserDTO;
-import com.devido.devido_be.model.Category;
-import com.devido.devido_be.model.Expense;
-import com.devido.devido_be.model.ExpenseParticipant;
-import com.devido.devido_be.model.User;
+import com.devido.devido_be.dto.*;
+import com.devido.devido_be.model.*;
 import com.devido.devido_be.service.BillService;
 import com.devido.devido_be.service.ExpenseService;
 import org.springframework.http.HttpStatus;
@@ -32,6 +26,27 @@ public class ExpenseController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse<>(false, "Fail to get bills", null));
+        }
+    }
+
+    @PostMapping("/{id}/bill")
+    public ResponseEntity<?> createBill(@PathVariable String id, @RequestBody BillDTO billDTO) {
+        try {
+            Bill bill = billService.createBill(id, billDTO);
+            BillDTO billResponse = new BillDTO(
+                    bill.getId(),
+                    bill.getName(),
+                    bill.getQuantity(),
+                    bill.getUnitPrice(),
+                    bill.getTotalPrice(),
+                    bill.getUsers().stream()
+                            .map(u -> new UserDTO(u.getId(), u.getName(), u.getEmail(), u.getCreatedAt()))
+                            .toList()
+            );
+            return ResponseEntity.ok(new ApiResponse<>(true, "Bill created successfully", billResponse));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Fail to create bill", null));
         }
     }
 
