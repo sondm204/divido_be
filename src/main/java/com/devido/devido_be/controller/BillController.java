@@ -49,4 +49,15 @@ public class BillController {
                     .body(new ApiResponse<>(false, "Fail to delete bill", null));
         }
     }
+    
+    @DeleteMapping("")
+    public ResponseEntity<?> deleteMuitipleBills(@RequestParam String ids) {
+        try {
+            billService.deleteMultipleBills(ids);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Bills deleted successfully", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Fail to delete bills", null));
+        }
+    }
 }

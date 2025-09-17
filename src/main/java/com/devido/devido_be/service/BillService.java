@@ -95,4 +95,13 @@ public class BillService {
                 .orElseThrow(() -> new RuntimeException("Bill not found"));
         billRepository.delete(bill);
     }
+
+    public void deleteMultipleBills(String billIds) {
+        String[] ids = billIds.split(",");
+        List<Bill> bills = billRepository.findAllById(Arrays.asList(ids));
+        if(bills.size() != ids.length) {
+            throw new RuntimeException("Some bills not found");
+        }
+        billRepository.deleteAll(bills);
+    }
 }

@@ -34,7 +34,7 @@ public class GroupService {
     }
 
     public List<GroupDTO> getAllGroups() {
-        List<Group> groups = groupRepository.findAll();
+        List<Group> groups = groupRepository.findAll().stream().sorted((g1, g2) -> g1.getCreatedAt().compareTo(g2.getCreatedAt())).toList();
         List<GroupDTO> groupDTOs = new ArrayList<>();
         for (Group group : groups) {
             List<UserDTO> users = group.getGroupMembers().stream().map(u -> new UserDTO(u.getUser().getId(), u.getUser().getName(), u.getUser().getEmail(), u.getUser().getCreatedAt())).toList();
