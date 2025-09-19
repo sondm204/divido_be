@@ -4,9 +4,11 @@ import com.devido.devido_be.dto.*;
 import com.devido.devido_be.model.*;
 import com.devido.devido_be.other.UUIDGenerator;
 import com.devido.devido_be.repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.*;
 
@@ -143,6 +145,36 @@ public class ExpenseService {
         Expense expense = expenseRepository.findById(id).orElseThrow(() -> new RuntimeException("Expense with id " + id + " not found"));
         expenseRepository.delete(expense);
     }
+
+    /** Chuẩn hoá & validate list ShareRatio: tổng = 1.000000 (scale 6), không âm, rỗng thì lỗi */
+    private List<ShareRatio> normalizeRatios(List<ShareRatio> input) {
+        if (input == null || input.isEmpty()) {
+            throw new RuntimeException("shareRatios is required and must not be empty");
+        }
+        BigDecimal sum = input.stream()
+                .map(ShareRatio::getRatio)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        if (sum.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("Sum of ratios must be > 0");
+        }
+
+        // normalize
+        List<ShareRatio> out = new ArrayList<>();
+        for (ShareRatio sr : input) {
+            BigDecimal norm = sr.getRatio().divide(sum, 6, RoundingMode.HALF_UP);
+            out.add(new ShareRatio(sr.getUser(), norm));
+        }
+        // dồn sai số cho phần tử cuối để tổng = 1.000000
+        BigDecimal total = out.stream().map(ShareRatio::getRatio).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal diff = BigDecimal.ONE.subtract(total).setScale(6, RoundingMode.HALF_UP);
+        ShareRatio last = out.get(out.size() - 1);
+        last.setRatio(last.getRatio().add(diff));
+        return out;
+    }
+
+
+
+
 
 
 }

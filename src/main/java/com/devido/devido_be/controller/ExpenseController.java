@@ -50,6 +50,56 @@ public class ExpenseController {
         }
     }
 
+    // small helper để tránh lặp lại mapping
+    private ExpenseDTO mapExpenseToDTO(Expense expense) {
+        ExpenseDTO dto = new ExpenseDTO(
+                expense.getId(),
+                new CategoryDTO(expense.getCategory().getId(), expense.getCategory().getCategoryName()),
+                expense.getAmount(),
+                new UserDTO(expense.getPayer().getId(), expense.getPayer().getName(), expense.getPayer().getEmail(), expense.getPayer().getCreatedAt()),
+                expense.getSpentAt(),
+                expense.getNote(),
+                expense.getCreatedAt()
+        );
+        if (expense.getExpenseParticipants() != null) {
+            for (ExpenseParticipant ep : expense.getExpenseParticipants()) {
+                User u = ep.getUser();
+                dto.addShareRatio(
+                        new UserDTO(u.getId(), u.getName(), u.getEmail(), u.getCreatedAt()),
+                        ep.getShareRatio()
+                );
+            }
+        }
+        if (expense.getBills() != null) {
+            for (Bill b : expense.getBills()) {
+                dto.addBill(new BillDTO(
+                        b.getId(),
+                        b.getName(),
+                        b.getQuantity(),
+                        b.getUnitPrice(),
+                        b.getTotalPrice(),
+                        b.getUsers().stream()
+                                .map(u -> new UserDTO(u.getId(), u.getName(), u.getEmail(), u.getCreatedAt()))
+                                .toList()
+                ));
+            }
+        }
+        return dto;
+    }
+
+    // NEW: tạo expense trong group
+    @PostMapping("/groups/{groupId}")
+    public ResponseEntity<?> createExpense(@PathVariable String groupId, @RequestBody ExpenseDTO expenseDTO) {
+        try {
+            Expense expense = expenseService.createExpense(groupId, expenseDTO);
+            ExpenseDTO expenseResponse = mapExpenseToDTO(expense);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Expense created successfully", expenseResponse));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Fail to create expense", null));
+        }
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateExpense(@PathVariable String id, @RequestBody ExpenseDTO expenseDTO) {
         try {
