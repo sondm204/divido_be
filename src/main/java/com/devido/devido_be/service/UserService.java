@@ -1,11 +1,13 @@
 package com.devido.devido_be.service;
 
+import com.devido.devido_be.config.SecurityConfig;
 import com.devido.devido_be.dto.UserDTO;
 import com.devido.devido_be.model.GroupMember;
 import com.devido.devido_be.model.User;
 import com.devido.devido_be.other.UUIDGenerator;
 import com.devido.devido_be.repository.GroupRepository;
 import com.devido.devido_be.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ import java.util.List;
 
 @Service
 public class UserService {
+    @Autowired
+    private SecurityConfig passwordEncoder;
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
 
@@ -37,7 +41,7 @@ public class UserService {
 
     public UserDTO getUserByEmail(String email) {
         User user = userRepository.findByEmail(email);
-        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt());
+        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(),user.getPassword());
     }
 
     public List<UserDTO> getUsersOfGroup(String groupId) {
@@ -47,7 +51,7 @@ public class UserService {
 
     public User createUser(UserDTO user) {
         String uuid = UUIDGenerator.getRandomUUID();
-        User newUser = new User(uuid, user.getName(), user.getEmail());
+        User newUser = new User(uuid, user.getName(), user.getEmail(),passwordEncoder.passwordEncoder().encode(user.getPassword()));
         userRepository.save(newUser);
         return userRepository.save(newUser);
     }
@@ -63,5 +67,8 @@ public class UserService {
     public void deleteUser(String id) {
         userRepository.findById(id).orElseThrow(() -> new RuntimeException("User with id " + id + " not found"));
         userRepository.deleteById(id);
+    }
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 }
