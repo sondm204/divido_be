@@ -14,12 +14,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final SecurityConfig passwordEncoder;
     private final UserService userService;
     private final GroupService groupService;
 
-    public UserController(SecurityConfig passwordEncoder, UserService userService, GroupService groupService) {
-        this.passwordEncoder = passwordEncoder;
+    public UserController(UserService userService, GroupService groupService) {
         this.userService = userService;
         this.groupService = groupService;
     }
@@ -36,38 +34,6 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse<>(false, "Fail to get groups", null));
-        }
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserDTO userLogin) {
-        try {
-            UserDTO user = userService.getUserByEmail(userLogin.getEmail());
-
-            if (user==null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(new ApiResponse<>(false, "User not found", null));
-            }
-
-            // So khớp password
-            if (!passwordEncoder.passwordEncoder().matches(userLogin.getPassword(), user.getPassword())) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(new ApiResponse<>(false, "Invalid password", null));
-            }
-
-            // Nếu ok → trả về thông tin user (không trả password)
-            UserDTO responseDTO = new UserDTO(
-                    user.getId(),
-                    user.getName(),
-                    user.getEmail(),
-                    user.getCreatedAt()
-            );
-
-            return ResponseEntity.ok(new ApiResponse<>(true, "Login successful", responseDTO));
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse<>(false, "Login failed", null));
         }
     }
 
@@ -100,7 +66,7 @@ public class UserController {
             }
 
             User user = userService.createUser(newUser);
-            UserDTO responseDTO = new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getPassword());
+            UserDTO responseDTO = new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt());
             return ResponseEntity.ok(new ApiResponse<>(true, "User created successfully", responseDTO));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

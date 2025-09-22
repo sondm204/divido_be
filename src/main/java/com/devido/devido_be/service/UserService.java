@@ -15,8 +15,6 @@ import java.util.List;
 
 @Service
 public class UserService {
-    @Autowired
-    private SecurityConfig passwordEncoder;
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
 
@@ -41,7 +39,7 @@ public class UserService {
 
     public UserDTO getUserByEmail(String email) {
         User user = userRepository.findByEmail(email);
-        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(),user.getPassword());
+        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt());
     }
 
     public List<UserDTO> getUsersOfGroup(String groupId) {
@@ -51,7 +49,7 @@ public class UserService {
 
     public User createUser(UserDTO user) {
         String uuid = UUIDGenerator.getRandomUUID();
-        User newUser = new User(uuid, user.getName(), user.getEmail(),passwordEncoder.passwordEncoder().encode(user.getPassword()));
+        User newUser = new User(uuid, user.getName(), user.getEmail());
         userRepository.save(newUser);
         return userRepository.save(newUser);
     }
