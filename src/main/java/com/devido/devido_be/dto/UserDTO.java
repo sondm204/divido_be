@@ -1,7 +1,8 @@
 package com.devido.devido_be.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.devido.devido_be.config.SecurityConfig;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Instant;
 
@@ -12,7 +13,6 @@ public class UserDTO {
     private Instant createdAt;
 
     public UserDTO() {}
-
     public UserDTO(String id, String name, String email, Instant createdAt) {
         this.id = id;
         this.name = name;

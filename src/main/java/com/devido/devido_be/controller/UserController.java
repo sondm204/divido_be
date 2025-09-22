@@ -1,10 +1,12 @@
 package com.devido.devido_be.controller;
 
+import com.devido.devido_be.config.SecurityConfig;
 import com.devido.devido_be.dto.ApiResponse;
 import com.devido.devido_be.dto.UserDTO;
 import com.devido.devido_be.model.User;
 import com.devido.devido_be.service.GroupService;
 import com.devido.devido_be.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +60,11 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity<?> createUser(@RequestBody UserDTO newUser) {
         try {
+            if (userService.existsByEmail(newUser.getEmail())) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(new ApiResponse<>(false, "Email already exists", null));
+            }
+
             User user = userService.createUser(newUser);
             UserDTO responseDTO = new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt());
             return ResponseEntity.ok(new ApiResponse<>(true, "User created successfully", responseDTO));
@@ -66,6 +73,7 @@ public class UserController {
                     .body(new ApiResponse<>(false, "Fail to create user", null));
         }
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody UserDTO newUser) {
