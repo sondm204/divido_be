@@ -1,11 +1,15 @@
 package com.devido.devido_be.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "categories")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Category {
     @Id
     @Column(name = "id", nullable = false, length = 50)
