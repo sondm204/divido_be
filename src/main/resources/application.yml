@@ -1,0 +1,18 @@
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: duongminhson1601@gmail.com
+    password: zzlr poti vosg dcvt
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+app:
+  jwt:
+    # secret nên là chuỗi base64 dài (>= 256 bit) và lưu ở secret manager trên production
+    secret: "eMZ2JGx2y4wbZdP6gWizNfWIMK0eEX3FZLptbVwsdxA="
+    verification-token-ttl-minutes: 10

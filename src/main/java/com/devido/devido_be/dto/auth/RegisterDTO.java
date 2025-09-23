@@ -6,6 +6,7 @@ public class RegisterDTO {
     private String name;
     private String email;
     private String password;
+    private String verificationToken;
 
     public String getName() {
         return name;
@@ -29,5 +30,9 @@ public class RegisterDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getVerificationToken() {
+        return verificationToken;
     }
 }
