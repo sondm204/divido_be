@@ -16,3 +16,11 @@ app:
     # secret nên là chuỗi base64 dài (>= 256 bit) và lưu ở secret manager trên production
     secret: "eMZ2JGx2y4wbZdP6gWizNfWIMK0eEX3FZLptbVwsdxA="
     verification-token-ttl-minutes: 10
+
+logging:
+  level:
+    root: INFO
+    com.devido.devido_be: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.boot.autoconfigure.web: DEBUG
+    org.springframework.mail: DEBUG
