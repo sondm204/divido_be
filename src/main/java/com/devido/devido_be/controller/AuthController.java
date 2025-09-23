@@ -2,6 +2,7 @@ package com.devido.devido_be.controller;
 
 import com.devido.devido_be.dto.ApiResponse;
 import com.devido.devido_be.dto.UserDTO;
+import com.devido.devido_be.dto.auth.EmailRequest;
 import com.devido.devido_be.dto.auth.LoginDTO;
 import com.devido.devido_be.dto.auth.RegisterDTO;
 import com.devido.devido_be.dto.auth.VerifyEmailRequest;
@@ -23,8 +24,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO request) {
         try {
-            var user = authService.login(request);
-            return ResponseEntity.ok(new ApiResponse<>(true, "Login successful", user));
+            var response = authService.login(request);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Login successful", response));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ApiResponse<>(false, "Login failed", null));
@@ -43,9 +44,9 @@ public class AuthController {
     }
 
     @PostMapping("/email-verification")
-    public ResponseEntity<?> sendVerificationEmail(@RequestBody String email) {
+    public ResponseEntity<?> sendVerificationEmail(@RequestBody EmailRequest request) {
         try {
-            authService.sendVerificationEmail(email);
+            authService.sendVerificationEmail(request.getEmail());
             return ResponseEntity.ok(new ApiResponse<>(true, "Verification email sent", null));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -56,8 +57,8 @@ public class AuthController {
     @PostMapping("/verify-email")
     public ResponseEntity<?> verifyEmail(@RequestBody VerifyEmailRequest request) {
         try {
-            authService.verifyEmail(request);
-            return ResponseEntity.ok(new ApiResponse<>(true, "Email verified", null));
+            var jwt = authService.verifyEmail(request);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Email verified", jwt));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ApiResponse<>(false, "Failed to verify email", null));

@@ -1,5 +1,6 @@
 package com.devido.devido_be.service;
 
+import com.devido.devido_be.model.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -65,6 +66,22 @@ public class JwtService {
             throw new IllegalArgumentException("Invalid token type");
         }
         return claims.getSubject();
+    }
+
+    public String generateAccessToken(User user) {
+        long nowMillis = System.currentTimeMillis();
+        long ttlMillis = 60 * 60 * 1000L; // 1h
+
+        return Jwts.builder()
+            .setSubject(user.getEmail())
+            .claim("uid", user.getId())       // Thêm thông tin user vào claim
+            .claim("name", user.getName())
+            .claim("email", user.getEmail())
+            .claim("type", "access_token")
+            .setIssuedAt(new Date(nowMillis))
+            .setExpiration(new Date(nowMillis + ttlMillis))
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact();
     }
 }
 

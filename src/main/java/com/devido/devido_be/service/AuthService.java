@@ -3,6 +3,7 @@ package com.devido.devido_be.service;
 import com.devido.devido_be.config.SecurityConfig;
 import com.devido.devido_be.dto.UserDTO;
 import com.devido.devido_be.dto.auth.LoginDTO;
+import com.devido.devido_be.dto.auth.LoginResponse;
 import com.devido.devido_be.dto.auth.RegisterDTO;
 import com.devido.devido_be.dto.auth.VerifyEmailRequest;
 import com.devido.devido_be.model.User;
@@ -11,6 +12,7 @@ import com.devido.devido_be.other.UUIDGenerator;
 import com.devido.devido_be.repository.UserRepository;
 import com.devido.devido_be.repository.VerificationCodeRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -31,7 +33,7 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
-    public UserDTO login(LoginDTO request) {
+    public LoginResponse login(LoginDTO request) {
         var user = userRepository.findByEmail(request.getEmail());
         if (user == null) {
             throw new RuntimeException("User not found");
@@ -39,7 +41,8 @@ public class AuthService {
         if (!passwordEncoder.passwordEncoder().matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
-        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt());
+        String token = jwtService.generateAccessToken(user);
+        return new LoginResponse(user.getId(), user.getName(), user.getEmail(), token);
     }
 
     public UserDTO register(RegisterDTO request) {
@@ -65,9 +68,10 @@ public class AuthService {
         return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt());
     }
 
+    @Transactional
     public void sendVerificationEmail(String email) {
         // Implementation for sending verification email
-        if (verificationCodeRepository.findByEmail(email) != null) {
+        if (verificationCodeRepository.findByEmail(email).isPresent()) {
             verificationCodeRepository.deleteByEmail(email);
         }
         String code = String.valueOf((int) (Math.random() * 900000) + 100000);

@@ -14,5 +14,5 @@ spring:
 app:
   jwt:
     # secret nên là chuỗi base64 dài (>= 256 bit) và lưu ở secret manager trên production
-    secret: "BASE64_ENCODED_SECRET_GOES_HERE"
+    secret: "eMZ2JGx2y4wbZdP6gWizNfWIMK0eEX3FZLptbVwsdxA="
     verification-token-ttl-minutes: 10
