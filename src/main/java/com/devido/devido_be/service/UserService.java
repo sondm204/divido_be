@@ -1,11 +1,13 @@
 package com.devido.devido_be.service;
 
+import com.devido.devido_be.config.SecurityConfig;
 import com.devido.devido_be.dto.UserDTO;
 import com.devido.devido_be.model.GroupMember;
 import com.devido.devido_be.model.User;
 import com.devido.devido_be.other.UUIDGenerator;
 import com.devido.devido_be.repository.GroupRepository;
 import com.devido.devido_be.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -63,5 +65,8 @@ public class UserService {
     public void deleteUser(String id) {
         userRepository.findById(id).orElseThrow(() -> new RuntimeException("User with id " + id + " not found"));
         userRepository.deleteById(id);
+    }
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 }

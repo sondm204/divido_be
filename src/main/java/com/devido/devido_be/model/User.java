@@ -21,6 +21,9 @@ public class User {
     @Column(name = "email", length = 150)
     private String email;
 
+    @Column(name = "password", length = 100)
+    private String password;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_at")
     private Instant createdAt;
@@ -44,11 +47,26 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    public User(String id, String name, String email, Instant createdAt,String password) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.createdAt = createdAt;
+        this.password = password;
+    }
+
     public User(String id, String name, String email) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.createdAt = Instant.now();
+    }
+    public User(String id, String name, String email,String password) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.createdAt = Instant.now();
+        this.password = password;
     }
 
     public String getId() {
@@ -73,6 +91,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Instant getCreatedAt() {
