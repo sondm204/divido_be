@@ -6,6 +6,7 @@ import com.devido.devido_be.other.UUIDGenerator;
 import com.devido.devido_be.repository.GroupMemberRepository;
 import com.devido.devido_be.repository.GroupRepository;
 import com.devido.devido_be.repository.UserRepository;
+import com.devido.devido_be.util.SecurityUtils;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
