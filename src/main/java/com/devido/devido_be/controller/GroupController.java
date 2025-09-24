@@ -88,6 +88,17 @@ public class GroupController {
         }
     }
 
+    @PostMapping("/{id}/categories")
+    public ResponseEntity<?> createCategory(@PathVariable String id, @RequestBody CategoryDTO categoryDTO) {
+        try {
+            CategoryDTO category = categoryService.createCategory(id, categoryDTO);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Category created successfully", category));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Fail to create category", null));
+        }
+    }
+
     @GetMapping("/{id}/expenses")
     public ResponseEntity<?> getAllExpenses(@PathVariable String id) {
         try {
