@@ -78,6 +78,7 @@ public class JwtService {
             .claim("name", user.getName())
             .claim("email", user.getEmail())
             .claim("type", "access_token")
+            .claim("role", "USER")
             .setIssuedAt(new Date(nowMillis))
             .setExpiration(new Date(nowMillis + ttlMillis))
             .signWith(key, SignatureAlgorithm.HS256)

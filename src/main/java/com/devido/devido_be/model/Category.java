@@ -1,15 +1,11 @@
 package com.devido.devido_be.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "categories")
-@AllArgsConstructor
-@NoArgsConstructor
 public class Category {
     @Id
     @Column(name = "id", nullable = false, length = 50)
@@ -22,6 +18,15 @@ public class Category {
 
     @Column(name = "category_name", length = 50)
     private String categoryName;
+
+    public Category() {
+    }
+
+    public Category(String id, Group group, String categoryName) {
+        this.id = id;
+        this.group = group;
+        this.categoryName = categoryName;
+    }
 
     public String getId() {
         return id;
