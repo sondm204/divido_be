@@ -17,10 +17,10 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<?> createCategory(@PathVariable String id, @RequestBody CategoryDTO categoryDTO) {
+    @PostMapping("/{groupid}")
+    public ResponseEntity<?> createCategory(@PathVariable String groupid, @RequestBody CategoryDTO categoryDTO) {
         try {
-            CategoryDTO category = categoryService.createCategory(id, categoryDTO);
+            CategoryDTO category = categoryService.createCategory(groupid, categoryDTO);
             CategoryDTO categoryResponse = new CategoryDTO(category.getId(), category.getName());
             return ResponseEntity.ok(new ApiResponse<>(true, "Category created successfully", categoryResponse));
         } catch (Exception e) {
