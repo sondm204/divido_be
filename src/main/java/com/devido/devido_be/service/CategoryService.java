@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,15 +39,18 @@ public class CategoryService {
         return new CategoryDTO(category.getId(), category.getCategoryName());
     }
 
-    public void createDefaultCategoriesForGroup(String groupId) {
+    public List<CategoryDTO> createDefaultCategoriesForGroup(String groupId) {
         var group = groupRepository.findById(groupId);
+        List<CategoryDTO> categories = new ArrayList<>();
         if (group.isEmpty()) {
             throw new RuntimeException("Group with id " + groupId + " not found");
         }
         for (String categoryName : defaultCategories) {
             var id = UUIDGenerator.getRandomUUID();
             categoryRepository.save(new Category(id, group.get(), categoryName));
+            categories.add(new CategoryDTO(id, categoryName));
         }
+        return categories;
     }
 
     public CategoryDTO updateCategory(String groupId, String categoryId, CategoryDTO categoryDTO) {

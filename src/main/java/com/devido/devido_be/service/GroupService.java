@@ -60,10 +60,11 @@ public class GroupService {
         return groupDTOs;
     }
 
-    public Group createGroup(GroupDTO groupDTO) {
+    public GroupDTO createGroup(GroupDTO groupDTO) {
         Group group = new Group();
         String newGroupId = UUIDGenerator.getRandomUUID();
         group.setId(newGroupId);
+        groupDTO.setId(newGroupId);
         group.setName(groupDTO.getName());
         groupRepository.save(group);
         if (groupDTO.getUsers() != null) {
@@ -74,8 +75,9 @@ public class GroupService {
                 groupMemberRepository.save(groupMember);
             }
         }
-        categoryService.createDefaultCategoriesForGroup(newGroupId);
-        return group;
+        var categories = categoryService.createDefaultCategoriesForGroup(newGroupId);
+        groupDTO.setCategories(categories);
+        return groupDTO;
     }
 
     @Transactional
@@ -91,6 +93,15 @@ public class GroupService {
                 groupMemberRepository.save(groupMember);
             }
         }
+        for (CategoryDTO categoryDTO : groupDTO.getCategories()) {
+            if (categoryDTO.getId() == null) {
+                var newCategory = categoryService.createCategory(id, categoryDTO);
+                categoryDTO.setId(newCategory.getId());
+            } else {
+                categoryService.updateCategory(id, categoryDTO.getId(), categoryDTO);
+            }
+        }
+        groupRepository.save(group);
         return groupDTO;
     }
 
