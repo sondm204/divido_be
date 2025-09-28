@@ -46,9 +46,8 @@ public class GroupController {
     @PostMapping("")
     public ResponseEntity<?> createGroup(@RequestBody GroupDTO groupDTO) {
         try {
-            Group group = groupService.createGroup(groupDTO);
-            GroupDTO groupResponse = new GroupDTO(group.getId(), group.getName(), group.getCreatedAt());
-            return ResponseEntity.ok(new ApiResponse<>(true, "Group created successfully", groupResponse));
+            GroupDTO group = groupService.createGroup(groupDTO);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Group created successfully", group));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse<>(false, "Fail to create group", null));
