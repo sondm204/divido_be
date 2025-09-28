@@ -74,6 +74,7 @@ public class GroupService {
                 groupMemberRepository.save(groupMember);
             }
         }
+        categoryService.createDefaultCategoriesForGroup(newGroupId);
         return group;
     }
 
