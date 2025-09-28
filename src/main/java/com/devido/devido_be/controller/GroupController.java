@@ -29,8 +29,8 @@ public class GroupController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getAllGroups() {
-        return ResponseEntity.ok(groupService.getAllGroups());
+    public ResponseEntity<?> getGroups() {
+        return ResponseEntity.ok(groupService.getGroups());
     }
 
     @GetMapping("/{id}")
@@ -96,6 +96,28 @@ public class GroupController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse<>(false, "Fail to create category", null));
+        }
+    }
+
+    @PutMapping("/{id}/categories/{categoryId}")
+    public ResponseEntity<?> updateCategory(@PathVariable String id, @PathVariable String categoryId, @RequestBody CategoryDTO categoryDTO) {
+        try {
+            CategoryDTO category = categoryService.updateCategory(id, categoryId, categoryDTO);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Category updated successfully", category));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Fail to update category", null));
+        }
+    }
+
+    @DeleteMapping("/{id}/categories/{categoryId}")
+    public ResponseEntity<?> deleteCategory(@PathVariable String id, @PathVariable String categoryId) {
+        try {
+            categoryService.deleteCategory(id, categoryId);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Category deleted successfully", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(false, "Fail to delete category", null));
         }
     }
 

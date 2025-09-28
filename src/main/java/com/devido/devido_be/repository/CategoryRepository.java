@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, String> {
     public List<Category> findAllByGroupId(String groupId);
+    public Category findFirstByIdAndGroupId(String id, String groupId);
 }
