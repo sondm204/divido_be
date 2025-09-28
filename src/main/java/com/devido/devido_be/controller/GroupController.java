@@ -29,8 +29,8 @@ public class GroupController {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> getAllGroups() {
-        return ResponseEntity.ok(groupService.getAllGroups());
+    public ResponseEntity<?> getGroups() {
+        return ResponseEntity.ok(groupService.getGroups());
     }
 
     @GetMapping("/{id}")

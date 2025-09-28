@@ -7,16 +7,12 @@ import com.devido.devido_be.repository.GroupMemberRepository;
 import com.devido.devido_be.repository.GroupRepository;
 import com.devido.devido_be.repository.UserRepository;
 import com.devido.devido_be.util.SecurityUtils;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class GroupService {
@@ -34,8 +30,9 @@ public class GroupService {
         this.expenseService = expenseService;
     }
 
-    public List<GroupDTO> getAllGroups() {
-        List<Group> groups = groupRepository.findAll().stream().sorted((g1, g2) -> g1.getCreatedAt().compareTo(g2.getCreatedAt())).toList();
+    public List<GroupDTO> getGroups() {
+        var userId = SecurityUtils.getCurrentUserId();
+        List<Group> groups = groupRepository.findAllByUserId(userId);
         List<GroupDTO> groupDTOs = new ArrayList<>();
         for (Group group : groups) {
             List<UserDTO> users = group.getGroupMembers().stream().map(u -> new UserDTO(u.getUser().getId(), u.getUser().getName(), u.getUser().getEmail(), u.getUser().getCreatedAt())).toList();
