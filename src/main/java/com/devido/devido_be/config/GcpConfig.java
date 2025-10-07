@@ -19,37 +19,14 @@ public class GcpConfig {
     @Value("${gcp.project-id}")
     private String projectId;
 
-    @Value("${gcp.credentials.location:}")
-    private String credentialsPath;
-
     @Bean
     public Storage storage() throws IOException {
-        StorageOptions.Builder optionsBuilder = StorageOptions.newBuilder().setProjectId(projectId);
-
-        // Nếu có khai báo credentialsPath → chạy local (hoặc VPS ngoài GCP)
-        if (credentialsPath != null && !credentialsPath.isBlank()) {
-            InputStream credentialsStream;
-            if (credentialsPath.startsWith("classpath:")) {
-                String resourcePath = credentialsPath.replace("classpath:", "");
-                credentialsStream = getClass().getClassLoader().getResourceAsStream(resourcePath);
-            } else if (credentialsPath.startsWith("file:")) {
-                String filePath = credentialsPath.replace("file:", "");
-                credentialsStream = new FileInputStream(filePath);
-            } else {
-                throw new IllegalArgumentException("Unsupported credentials path format: " + credentialsPath);
-            }
-
-            Credentials credentials = ServiceAccountCredentials.fromStream(credentialsStream);
-            optionsBuilder.setCredentials(credentials);
-
-            System.out.println("🔑 Using explicit credentials from: " + credentialsPath);
-        } else {
-            // Nếu không có credentialsPath → chạy trong Cloud Run (tự động nhận)
-            Credentials defaultCredentials = GoogleCredentials.getApplicationDefault();
-            optionsBuilder.setCredentials(defaultCredentials);
-            System.out.println("🌩️ Using default GCP credentials (Cloud Run / GCE / GKE)");
-        }
-
-        return optionsBuilder.build().getService();
+        // Tự động sử dụng Application Default Credentials (ADC)
+        Credentials credentials = GoogleCredentials.getApplicationDefault();
+        return StorageOptions.newBuilder()
+            .setProjectId(projectId)
+            .setCredentials(credentials)
+            .build()
+            .getService();
     }
 }
