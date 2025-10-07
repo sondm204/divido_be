@@ -25,3 +25,9 @@ logging:
     org.springframework.boot.autoconfigure.web: DEBUG
     org.springframework.mail: DEBUG
     com.sun.mail: DEBUG
+
+gcp:
+  project-id: "divido-474216"
+  bucket-name: "divido_bucket"
+  credentials:
+    location: file:D:/Project/Devido/divido-474216-3bd0c0825cc0.json
