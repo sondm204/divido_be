@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class DevidoBeApplication {
 
+
 	public static void main(String[] args) {
 		SpringApplication.run(DevidoBeApplication.class, args);
 	}
