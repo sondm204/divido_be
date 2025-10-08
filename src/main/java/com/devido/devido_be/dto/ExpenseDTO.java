@@ -16,19 +16,21 @@ public class ExpenseDTO {
     private UserDTO payer;
     private LocalDate spentAt;
     private String note;
+    private String imageUrl;
     private List<ShareRatio> shareRatios = new ArrayList<>();
     private List<BillDTO> bills = new ArrayList<>();
     private Instant createdAt;
 
     public ExpenseDTO() {}
 
-    public ExpenseDTO(String id, CategoryDTO categories, Integer amount, UserDTO payer, LocalDate spentAt, String note, Instant createdAt) {
+    public ExpenseDTO(String id, CategoryDTO categories, Integer amount, UserDTO payer, LocalDate spentAt, String note, String imageUrl, Instant createdAt) {
         this.id = id;
         this.category = categories;
         this.amount = amount;
         this.payer = payer;
         this.spentAt = spentAt;
         this.note = note;
+        this.imageUrl = imageUrl;
         this.createdAt = createdAt;
     }
 
@@ -79,6 +81,13 @@ public class ExpenseDTO {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Instant getCreatedAt() {
