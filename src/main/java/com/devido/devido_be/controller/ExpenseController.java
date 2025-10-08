@@ -41,7 +41,8 @@ public class ExpenseController {
                     bill.getTotalPrice(),
                     bill.getUsers().stream()
                             .map(u -> new UserDTO(u.getId(), u.getName(), u.getEmail(), u.getCreatedAt()))
-                            .toList()
+                            .toList(),
+                    bill.getCreatedAt()
             );
             return ResponseEntity.ok(new ApiResponse<>(true, "Bill created successfully", billResponse));
         } catch (Exception e) {

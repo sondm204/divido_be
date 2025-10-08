@@ -2,8 +2,10 @@ package com.devido.devido_be.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,6 +32,10 @@ public class Bill {
     @Column(name = "total_price")
     private Integer totalPrice;
 
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "created_at")
+    private Instant createdAt;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "bill_members",
@@ -48,6 +54,11 @@ public class Bill {
         this.unitPrice = unitPrice;
         this.totalPrice = totalPrice;
         this.users = users;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = Instant.now();
     }
 
     public String getId() {
@@ -104,5 +115,8 @@ public class Bill {
 
     public void setUsers(Set<User> users) {
         this.users = users;
+    }
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 }
