@@ -39,6 +39,9 @@ public class Expense {
     @Column(name = "note", length = Integer.MAX_VALUE)
     private String note;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @OneToMany(mappedBy = "expense")
     private Set<ExpenseParticipant> expenseParticipants;
 
@@ -51,7 +54,7 @@ public class Expense {
 
     public Expense() {}
 
-    public Expense(String id, Group group, Category category, Integer amount, User payer, LocalDate spentAt, String note) {
+    public Expense(String id, Group group, Category category, Integer amount, User payer, LocalDate spentAt, String note, String imageUrl) {
         this.id = id;
         this.group = group;
         this.category = category;
@@ -59,6 +62,7 @@ public class Expense {
         this.payer = payer;
         this.spentAt = spentAt;
         this.note = note;
+        this.imageUrl = imageUrl;
     }
 
     @PrePersist
@@ -116,6 +120,13 @@ public class Expense {
 
     public String getNote() {
         return note;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public void setNote(String note) {

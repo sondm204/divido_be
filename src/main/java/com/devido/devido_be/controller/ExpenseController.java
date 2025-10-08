@@ -61,6 +61,7 @@ public class ExpenseController {
                     new UserDTO(expense.getPayer().getId(), expense.getPayer().getName(), expense.getPayer().getEmail(), expense.getPayer().getCreatedAt()),
                     expense.getSpentAt(),
                     expense.getNote(),
+                    expense.getImageUrl(),
                     expense.getCreatedAt()
             );
             if (expense.getExpenseParticipants() != null && !expense.getExpenseParticipants().isEmpty()) {

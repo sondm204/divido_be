@@ -35,7 +35,7 @@ public class ExpenseService {
             User p = e.getPayer();
             CategoryDTO category = new CategoryDTO(e.getCategory().getId(), e.getCategory().getCategoryName());
             UserDTO payer = new UserDTO(p.getId(), p.getName(), p.getEmail(), p.getCreatedAt());
-            ExpenseDTO expenseDTO = new ExpenseDTO(e.getId(), category, e.getAmount(), payer, e.getSpentAt(), e.getNote(), e.getCreatedAt());
+            ExpenseDTO expenseDTO = new ExpenseDTO(e.getId(), category, e.getAmount(), payer, e.getSpentAt(), e.getNote(), e.getImageUrl(), e.getCreatedAt());
             if (e.getExpenseParticipants() != null && !e.getExpenseParticipants().isEmpty()) {
                 List<ExpenseParticipant> sortedExpenseParticipants = e.getExpenseParticipants().stream()
                         .sorted(Comparator.comparing(
@@ -75,7 +75,8 @@ public class ExpenseService {
                 expenseDTOs.getAmount(),
                 payer,
                 expenseDTOs.getSpentAt(),
-                expenseDTOs.getNote()
+                expenseDTOs.getNote(),
+                expenseDTOs.getImageUrl()
         );
         Expense savedExpense = expenseRepository.save(newExpense);
         if (expenseDTOs.getShareRatios() != null && !expenseDTOs.getShareRatios().isEmpty()) {
@@ -123,6 +124,7 @@ public class ExpenseService {
         expense.setAmount(expenseDTO.getAmount());
         expense.setSpentAt(expenseDTO.getSpentAt());
         expense.setNote(expenseDTO.getNote());
+        expense.setImageUrl(expenseDTO.getImageUrl());
         Expense updatedExpense = expenseRepository.save(expense);
         if (expenseDTO.getShareRatios() != null && !expenseDTO.getShareRatios().isEmpty()) {
             List<ExpenseParticipant> expenseParticipants = new ArrayList<>();
