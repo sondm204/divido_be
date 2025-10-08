@@ -163,7 +163,8 @@ public class GroupController {
                             bill.getQuantity(),
                             bill.getUnitPrice(),
                             bill.getTotalPrice(),
-                            users.stream().map(u -> new UserDTO(u.getId(), u.getName(), u.getEmail(), u.getCreatedAt())).toList()
+                            users.stream().map(u -> new UserDTO(u.getId(), u.getName(), u.getEmail(), u.getCreatedAt())).toList(),
+                            bill.getCreatedAt()
                         )
                     );
                 }

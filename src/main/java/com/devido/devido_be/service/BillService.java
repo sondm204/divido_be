@@ -43,7 +43,8 @@ public class BillService {
                 b.getTotalPrice(),
                 b.getUsers().stream()
                         .map(u -> new UserDTO(u.getId(), u.getName(), u.getEmail(), u.getCreatedAt()))
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()),
+                b.getCreatedAt()
         )).toList();
     }
 

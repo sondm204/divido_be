@@ -1,6 +1,7 @@
 package com.devido.devido_be.dto;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 
 public class BillDTO {
@@ -10,16 +11,18 @@ public class BillDTO {
     private Integer unitPrice;
     private Integer totalPrice;
     private List<UserDTO> owner;
+    private Instant createdAt;
 
     public BillDTO() {}
 
-    public BillDTO(String id, String name, BigDecimal quantity, Integer unitPrice, Integer totalPrice, List<UserDTO> owner) {
+    public BillDTO(String id, String name, BigDecimal quantity, Integer unitPrice, Integer totalPrice, List<UserDTO> owner, Instant createdAt) {
         this.id = id;
         this.name = name;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.totalPrice = totalPrice;
         this.owner = owner;
+        this.createdAt = createdAt;
     }
 
     public String getId() {
@@ -73,5 +76,8 @@ public class BillDTO {
     public void addOwner(UserDTO user) {
         if (this.owner == null) this.owner = List.of(user);
         this.owner.add(user);
+    }
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 }
