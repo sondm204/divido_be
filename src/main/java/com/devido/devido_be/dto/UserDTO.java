@@ -1,8 +1,5 @@
 package com.devido.devido_be.dto;
 
-import com.devido.devido_be.config.SecurityConfig;
-import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Instant;
 

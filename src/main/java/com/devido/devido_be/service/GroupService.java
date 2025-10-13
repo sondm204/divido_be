@@ -36,7 +36,9 @@ public class GroupService {
         List<GroupDTO> groupDTOs = new ArrayList<>();
         for (Group group : groups) {
             List<UserDTO> users = group.getGroupMembers().stream().map(u -> new UserDTO(u.getUser().getId(), u.getUser().getName(), u.getUser().getEmail(), u.getUser().getCreatedAt())).toList();
-            groupDTOs.add(new GroupDTO(group.getId(), group.getName(), group.getCreatedAt(), users));
+            var totalAmount = expenseService.getTotalAmountOfGroup(group.getId());
+            var totalUserAmount = expenseService.getTotalAmountOfUserInGroup(group.getId(), userId);
+            groupDTOs.add(new GroupDTO(group.getId(), group.getName(), group.getCreatedAt(), users, totalAmount, totalUserAmount));
         }
         return groupDTOs;
     }
