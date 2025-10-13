@@ -4,6 +4,7 @@ import com.devido.devido_be.dto.*;
 import com.devido.devido_be.model.*;
 import com.devido.devido_be.other.UUIDGenerator;
 import com.devido.devido_be.repository.*;
+import com.devido.devido_be.util.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -146,5 +147,15 @@ public class ExpenseService {
         expenseRepository.delete(expense);
     }
 
+    public Long getTotalAmountOfGroup(String groupId) {
+        return expenseRepository.getTotalAmountByGroupId(groupId);
+    }
 
+    public Long getTotalAmountOfUser(String userId) {
+        return expenseRepository.getTotalAmountOfUser(userId);
+    }
+
+    public Long getTotalAmountOfUserInGroup(String groupId, String userId) {
+        return expenseRepository.getTotalAmountOfUserInGroupId(groupId, userId);
+    }
 }

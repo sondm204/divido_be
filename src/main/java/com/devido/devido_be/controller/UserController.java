@@ -4,6 +4,7 @@ import com.devido.devido_be.config.SecurityConfig;
 import com.devido.devido_be.dto.ApiResponse;
 import com.devido.devido_be.dto.UserDTO;
 import com.devido.devido_be.model.User;
+import com.devido.devido_be.service.ExpenseService;
 import com.devido.devido_be.service.GroupService;
 import com.devido.devido_be.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
     private final GroupService groupService;
+    private final ExpenseService expenseService;
 
-    public UserController(UserService userService, GroupService groupService) {
+    public UserController(UserService userService, GroupService groupService, ExpenseService expenseService) {
         this.userService = userService;
         this.groupService = groupService;
+        this.expenseService = expenseService;
     }
 
     @GetMapping("")
@@ -54,6 +57,16 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse<>(false, "Cannot find user", null));
+        }
+    }
+
+    @GetMapping("/{id}/total-amount")
+    public ResponseEntity<?> getTotalAmount(@PathVariable String id) {
+        try {
+            return ResponseEntity.ok(new ApiResponse<>(true, "", expenseService.getTotalAmountOfUser(id)) );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse<>(false, "Fail to get total amount", null));
         }
     }
 
