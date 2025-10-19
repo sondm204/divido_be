@@ -34,3 +34,7 @@ gcp:
   bucket-name: "divido_bucket"
 #  credentials:
 #    location: file:D:/Project/Devido/divido-474216-3bd0c0825cc0.json
+
+mindee:
+  api-key: "md_6nZNBwruuahorRrbrLbibq4uwkJXv8VU"
+  model-id: "ee6d2ed6-1e50-4131-a816-a9541684c5d8"
