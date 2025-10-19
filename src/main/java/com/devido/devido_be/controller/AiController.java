@@ -30,14 +30,13 @@ public class AiController {
     @PostMapping("/handle-bill")
     public ResponseEntity<?> ocr(@RequestParam String url) throws ExecutionException, InterruptedException {
 
-//        long ocrStart = System.currentTimeMillis();
-//        String data = imageToTextAsync(url).get();
-//        long ocrTime = System.currentTimeMillis() - ocrStart;
-//        System.out.println("⏱️ OCR Service took: " + ocrTime);
+        long ocrStart = System.currentTimeMillis();
+        String data = imageToTextAsync(url).get();
+        long ocrTime = System.currentTimeMillis() - ocrStart;
+        System.out.println("⏱️ OCR Service took: " + ocrTime);
 
         long aiStart = System.currentTimeMillis();
-        String billsText = aiService.extractBillFromImage(url);
-//        String billsText = aiFormatTextAsync(data).get();
+        String billsText = aiFormatTextAsync(data).get();
         long aiTime = System.currentTimeMillis() - aiStart;
         System.out.println("⏱️AI Service took: " + aiTime);
 
