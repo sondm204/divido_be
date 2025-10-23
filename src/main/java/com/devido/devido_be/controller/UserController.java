@@ -3,6 +3,7 @@ package com.devido.devido_be.controller;
 import com.devido.devido_be.config.SecurityConfig;
 import com.devido.devido_be.dto.ApiResponse;
 import com.devido.devido_be.dto.UserDTO;
+import com.devido.devido_be.dto.expense.ExpenseFilterRequest;
 import com.devido.devido_be.model.User;
 import com.devido.devido_be.service.ExpenseService;
 import com.devido.devido_be.service.GroupService;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/users")
@@ -63,10 +66,22 @@ public class UserController {
     @GetMapping("/{id}/total-amount")
     public ResponseEntity<?> getTotalAmount(@PathVariable String id) {
         try {
-            return ResponseEntity.ok(new ApiResponse<>(true, "", expenseService.getTotalAmountOfUser(id)) );
+            ExpenseFilterRequest filter = new ExpenseFilterRequest(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
+            return ResponseEntity.ok(new ApiResponse<>(true, "", expenseService.getTotalAmountOfUser(id, filter)) );
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ApiResponse<>(false, "Fail to get total amount", null));
+        }
+    }
+
+    @GetMapping("/{id}/category-statistics")
+    public ResponseEntity<?> getTotalAmountByCategory(@PathVariable String id) {
+        try {
+            ExpenseFilterRequest filter = new ExpenseFilterRequest(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
+            return ResponseEntity.ok(new ApiResponse<>(true, "", expenseService.getTotalExpensesByCategory(id, filter)) );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse<>(false, "Fail to get total amount by category", null));
         }
     }
 
