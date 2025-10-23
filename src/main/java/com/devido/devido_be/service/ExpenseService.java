@@ -1,14 +1,17 @@
 package com.devido.devido_be.service;
 
 import com.devido.devido_be.dto.*;
+import com.devido.devido_be.dto.expense.ExpenseCategoryResponse;
+import com.devido.devido_be.dto.expense.ExpenseDTO;
+import com.devido.devido_be.dto.expense.ExpenseFilterRequest;
 import com.devido.devido_be.model.*;
 import com.devido.devido_be.other.UUIDGenerator;
 import com.devido.devido_be.repository.*;
-import com.devido.devido_be.util.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -29,8 +32,10 @@ public class ExpenseService {
         this.billRepository = billRepository;
     }
 
-    public List<ExpenseDTO> getAllExpensesOfGroup(String groupId) {
-        List<Expense> expenses = expenseRepository.findAllByGroupId(groupId);
+    public List<ExpenseDTO> getAllExpensesOfGroup(String groupId, ExpenseFilterRequest filterRequest) {
+        int month = filterRequest.getMonth() != null ? filterRequest.getMonth() : LocalDate.now().getMonthValue();
+        int year = filterRequest.getYear() != null ? filterRequest.getYear() : LocalDate.now().getYear();
+        List<Expense> expenses = expenseRepository.findAllByGroupId(groupId, month, year);
         List<ExpenseDTO> expenseDTOs = new ArrayList<>();
         for (Expense e : expenses) {
             User p = e.getPayer();
@@ -147,15 +152,37 @@ public class ExpenseService {
         expenseRepository.delete(expense);
     }
 
-    public Long getTotalAmountOfGroup(String groupId) {
-        return expenseRepository.getTotalAmountByGroupId(groupId);
+    public Long getTotalAmountOfGroup(String groupId, ExpenseFilterRequest filterRequest) {
+        int month = filterRequest.getMonth() != null ? filterRequest.getMonth() : LocalDate.now().getMonthValue();
+        int year = filterRequest.getYear() != null ? filterRequest.getYear() : LocalDate.now().getYear();
+        return expenseRepository.getTotalAmountByGroupId(groupId, month, year);
     }
 
-    public Long getTotalAmountOfUser(String userId) {
-        return expenseRepository.getTotalAmountOfUser(userId);
+    public Long getTotalAmountOfUser(String userId, ExpenseFilterRequest filterRequest) {
+        int month = filterRequest.getMonth() != null ? filterRequest.getMonth() : LocalDate.now().getMonthValue();
+        int year = filterRequest.getYear() != null ? filterRequest.getYear() : LocalDate.now().getYear();
+        return expenseRepository.getTotalAmountOfUser(userId, month, year);
     }
 
-    public Long getTotalAmountOfUserInGroup(String groupId, String userId) {
-        return expenseRepository.getTotalAmountOfUserInGroupId(groupId, userId);
+    public Long getTotalAmountOfUserInGroup(String groupId, String userId, ExpenseFilterRequest filterRequest) {
+        int month = filterRequest.getMonth() != null ? filterRequest.getMonth() : LocalDate.now().getMonthValue();
+        int year = filterRequest.getYear() != null ? filterRequest.getYear() : LocalDate.now().getYear();
+        return expenseRepository.getTotalAmountOfUserInGroupId(groupId, userId, month, year);
+    }
+
+    public List<ExpenseCategoryResponse> getTotalExpensesByCategory(String userId, ExpenseFilterRequest filterRequest) {
+        int month = filterRequest.getMonth() != null ? filterRequest.getMonth() : LocalDate.now().getMonthValue();
+        int year = filterRequest.getYear() != null ? filterRequest.getYear() : LocalDate.now().getYear();
+        long totalAmount = getTotalAmountOfUser(userId, filterRequest);
+        var results = expenseRepository.getTotalAmountOfCategory(userId, month, year);
+        for(ExpenseCategoryResponse e : results) {
+            if (totalAmount > 0) {
+                long percentage = e.getTotal() * 100 / totalAmount;
+                e.setPercentage((int) percentage);
+            } else {
+                e.setPercentage(0);
+            }
+        }
+        return results;
     }
 }

@@ -1,10 +1,10 @@
 package com.devido.devido_be.dto;
 
+import com.devido.devido_be.dto.expense.ExpenseDTO;
+
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class GroupDTO {
     private String id;

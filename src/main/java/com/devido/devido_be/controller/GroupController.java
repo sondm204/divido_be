@@ -1,6 +1,8 @@
 package com.devido.devido_be.controller;
 
 import com.devido.devido_be.dto.*;
+import com.devido.devido_be.dto.expense.ExpenseDTO;
+import com.devido.devido_be.dto.expense.ExpenseFilterRequest;
 import com.devido.devido_be.model.*;
 import com.devido.devido_be.service.CategoryService;
 import com.devido.devido_be.service.ExpenseService;
@@ -10,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -121,9 +122,9 @@ public class GroupController {
     }
 
     @GetMapping("/{id}/expenses")
-    public ResponseEntity<?> getAllExpenses(@PathVariable String id) {
+    public ResponseEntity<?> getAllExpenses(@PathVariable String id, ExpenseFilterRequest filterRequest) {
         try {
-            return ResponseEntity.ok(expenseService.getAllExpensesOfGroup(id));
+            return ResponseEntity.ok(expenseService.getAllExpensesOfGroup(id, filterRequest));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse<>(false, "Fail to get expenses", null));

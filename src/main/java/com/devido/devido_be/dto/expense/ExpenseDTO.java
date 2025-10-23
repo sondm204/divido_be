@@ -1,6 +1,9 @@
-package com.devido.devido_be.dto;
+package com.devido.devido_be.dto.expense;
 
-import com.devido.devido_be.model.User;
+import com.devido.devido_be.dto.BillDTO;
+import com.devido.devido_be.dto.CategoryDTO;
+import com.devido.devido_be.dto.ShareRatio;
+import com.devido.devido_be.dto.UserDTO;
 
 import java.math.BigDecimal;
 import java.time.Instant;

@@ -1,6 +1,7 @@
 package com.devido.devido_be.controller;
 
 import com.devido.devido_be.dto.*;
+import com.devido.devido_be.dto.expense.ExpenseDTO;
 import com.devido.devido_be.model.*;
 import com.devido.devido_be.service.BillService;
 import com.devido.devido_be.service.ExpenseService;

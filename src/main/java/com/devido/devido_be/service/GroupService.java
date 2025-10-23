@@ -1,6 +1,8 @@
 package com.devido.devido_be.service;
 
 import com.devido.devido_be.dto.*;
+import com.devido.devido_be.dto.expense.ExpenseDTO;
+import com.devido.devido_be.dto.expense.ExpenseFilterRequest;
 import com.devido.devido_be.model.*;
 import com.devido.devido_be.other.UUIDGenerator;
 import com.devido.devido_be.repository.GroupMemberRepository;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +39,11 @@ public class GroupService {
         List<GroupDTO> groupDTOs = new ArrayList<>();
         for (Group group : groups) {
             List<UserDTO> users = group.getGroupMembers().stream().map(u -> new UserDTO(u.getUser().getId(), u.getUser().getName(), u.getUser().getEmail(), u.getUser().getCreatedAt())).toList();
-            var totalAmount = expenseService.getTotalAmountOfGroup(group.getId());
-            var totalUserAmount = expenseService.getTotalAmountOfUserInGroup(group.getId(), userId);
+            int month = LocalDate.now().getMonthValue();
+            int year = LocalDate.now().getYear();
+            ExpenseFilterRequest filter = new ExpenseFilterRequest(month, year);
+            var totalAmount = expenseService.getTotalAmountOfGroup(group.getId(), filter);
+            var totalUserAmount = expenseService.getTotalAmountOfUserInGroup(group.getId(), userId, filter);
             groupDTOs.add(new GroupDTO(group.getId(), group.getName(), group.getCreatedAt(), users, totalAmount, totalUserAmount));
         }
         return groupDTOs;
@@ -47,7 +53,10 @@ public class GroupService {
         Group group = groupRepository.findById(id).orElseThrow(() -> new RuntimeException("Group with id " + id + " not found"));
         List<CategoryDTO> categories = categoryService.getAllCategoriesOfGroup(id);
         List<UserDTO> users = group.getGroupMembers().stream().map(u -> new UserDTO(u.getUser().getId(), u.getUser().getName(), u.getUser().getEmail(), u.getUser().getCreatedAt())).toList();
-        List<ExpenseDTO> expenses = expenseService.getAllExpensesOfGroup(id);
+        int month = LocalDate.now().getMonthValue();
+        int year = LocalDate.now().getYear();
+        var filter = new ExpenseFilterRequest(month, year);
+        List<ExpenseDTO> expenses = expenseService.getAllExpensesOfGroup(id, filter);
         return new GroupDTO(group.getId(), group.getName(), group.getCreatedAt(), categories, expenses, users);
     }
 
