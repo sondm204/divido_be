@@ -8,10 +8,12 @@ import com.devido.devido_be.service.CategoryService;
 import com.devido.devido_be.service.ExpenseService;
 import com.devido.devido_be.service.GroupService;
 import com.devido.devido_be.service.UserService;
+import com.devido.devido_be.util.SecurityUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @RestController
@@ -169,6 +171,12 @@ public class GroupController {
                         )
                     );
                 }
+            }
+            var userId = SecurityUtils.getCurrentUserId();
+            ExpenseFilterRequest filter = new ExpenseFilterRequest(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
+            var warning = userService.checkBudgetExceed(userId, filter);
+            if(warning != null) {
+                return ResponseEntity.ok(new ApiResponse<>(true, "Expense created successfully", expenseResponse, warning));
             }
             return ResponseEntity.ok(new ApiResponse<>(true, "Expense created successfully", expenseResponse));
         } catch (Exception e) {

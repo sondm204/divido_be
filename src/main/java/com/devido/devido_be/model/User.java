@@ -28,6 +28,18 @@ public class User {
     @Column(name = "created_at")
     private Instant createdAt;
 
+    @Column(name = "total_budget")
+    private Long totalBudget;
+
+    @Column(name = "food_budget")
+    private Long foodBudget;
+
+    @Column(name = "entertainment_budget")
+    private Long entertainmentBudget;
+
+    @Column(name = "is_reminded")
+    private Boolean isReminded;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<GroupMember> groupMembers = new HashSet<>();
 
@@ -131,5 +143,37 @@ public class User {
 
     public void setExpenseParticipants(Set<ExpenseParticipant> expenseParticipants) {
         this.expenseParticipants = expenseParticipants;
+    }
+
+    public Long getTotalBudget() {
+        return totalBudget;
+    }
+
+    public void setTotalBudget(Long totalBudget) {
+        this.totalBudget = totalBudget;
+    }
+
+    public Long getFoodBudget() {
+        return foodBudget;
+    }
+
+    public void setFoodBudget(Long foodBudget) {
+        this.foodBudget = foodBudget;
+    }
+
+    public Long getEntertainmentBudget() {
+        return entertainmentBudget;
+    }
+
+    public void setEntertainmentBudget(Long entertainmentBudget) {
+        this.entertainmentBudget = entertainmentBudget;
+    }
+
+    public Boolean getReminded() {
+        return isReminded;
+    }
+
+    public void setReminded(Boolean reminded) {
+        isReminded = reminded;
     }
 }
