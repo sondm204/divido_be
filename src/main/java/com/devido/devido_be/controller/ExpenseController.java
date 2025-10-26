@@ -2,22 +2,29 @@ package com.devido.devido_be.controller;
 
 import com.devido.devido_be.dto.*;
 import com.devido.devido_be.dto.expense.ExpenseDTO;
+import com.devido.devido_be.dto.expense.ExpenseFilterRequest;
 import com.devido.devido_be.model.*;
 import com.devido.devido_be.service.BillService;
 import com.devido.devido_be.service.ExpenseService;
+import com.devido.devido_be.service.UserService;
+import com.devido.devido_be.util.SecurityUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/expenses")
 public class ExpenseController {
     private final ExpenseService expenseService;
     private final BillService billService;
+    private final UserService userService;
 
-    public ExpenseController(ExpenseService expenseService, BillService billService) {
+    public ExpenseController(ExpenseService expenseService, BillService billService, UserService userService) {
         this.expenseService = expenseService;
         this.billService = billService;
+        this.userService = userService;
     }
 
     @GetMapping("/{id}/bill")
@@ -74,6 +81,12 @@ public class ExpenseController {
                             expenseParticipant.getShareRatio()
                     );
                 }
+            }
+            var userId = SecurityUtils.getCurrentUserId();
+            ExpenseFilterRequest filter = new ExpenseFilterRequest(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
+            var warning = userService.checkBudgetExceed(userId, filter);
+            if(warning != null) {
+                return ResponseEntity.ok(new ApiResponse<>(true, "Expense updated successfully", expenseResponse, warning));
             }
             return ResponseEntity.ok(new ApiResponse<>(true, "Expense updated successfully", expenseResponse));
         } catch (Exception e) {

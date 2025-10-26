@@ -70,7 +70,7 @@ public class JwtService {
 
     public String generateAccessToken(User user) {
         long nowMillis = System.currentTimeMillis();
-        long ttlMillis = 60 * 60 * 1000L; // 1h
+        long ttlMillis = 30 * 24 * 60 * 60 * 1000L; // 1h
 
         return Jwts.builder()
             .setSubject(user.getEmail())
