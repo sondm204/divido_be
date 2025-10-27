@@ -107,7 +107,7 @@ public class UserController {
     public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody UserDTO newUser) {
         try {
             User user = userService.updateUser(id, newUser);
-            UserDTO responseDTO = new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt());
+            UserDTO responseDTO = new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getTotalBudget(), user.getFoodBudget(), user.getEntertainmentBudget(), user.getReminded());
             return ResponseEntity.ok(new ApiResponse<>(true, "User updated successfully", responseDTO));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
