@@ -64,6 +64,10 @@ public class UserService {
         assert updateUser != null;
         if (user.getName() != null) updateUser.setName(user.getName());
         if (user.getEmail() != null) updateUser.setEmail(user.getEmail());
+        if (user.getTotalBudget() != null) updateUser.setTotalBudget(user.getTotalBudget());
+        if (user.getFoodBudget() != null) updateUser.setFoodBudget(user.getFoodBudget());
+        if (user.getEntertainmentBudget() != null) updateUser.setEntertainmentBudget(user.getEntertainmentBudget());
+        if (user.getReminded() != null) updateUser.setReminded(user.getReminded());
         return userRepository.save(updateUser);
     }
 
